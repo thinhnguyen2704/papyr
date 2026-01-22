@@ -1,0 +1,36 @@
+# --- Python / Backend ---
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.pytest_cache/
+backend/output/
+backend/data/train/
+backend/data/val/
+
+# --- PaddleOCR / ML Weights ---
+# We ignore pre-trained models and large inference binaries
+*.pdparams
+*.pdopt
+*.pdmodel
+*.json
+inference/
+
+# --- Node.js / Frontend ---
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+.DS_Store
+
+# --- Logs & OS ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.idea/
+.vscode/
+*.swp
