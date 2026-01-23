@@ -17,7 +17,7 @@ backend/data/val/
 *.json
 inference/
 
-# --- Node.js / Frontend ---
+# --- Frontend ---
 frontend/node_modules/
 frontend/dist/
 frontend/.env.local
