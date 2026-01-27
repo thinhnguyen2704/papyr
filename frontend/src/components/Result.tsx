@@ -5,19 +5,37 @@ interface ResultCardProps {
   result: string;
   copySuccess: boolean;
   copy: () => void;
+  darkMode: boolean;
+  labels: {
+    resultHeader: string;
+    copy: string;
+    copied: string;
+    error: string;
+    uploadFailed: string;
+    noText: string;
+  };
 }
 
-export const ResultCard: React.FC<ResultCardProps> = ({ result, copySuccess, copy }) => {
+export const ResultCard: React.FC<ResultCardProps> = ({ 
+  result, 
+  copySuccess, 
+  copy, 
+  darkMode,
+  labels
+}) => {
   return (
-    <div className="w-full bg-white/95 backdrop-blur-md rounded-[2rem] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/20 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className={`w-full rounded-4xl p-8 shadow-2xl border transition-all duration-500 ${
+      darkMode 
+        ? 'bg-white/95 border-white/20' 
+        : 'bg-white border-zinc-200 shadow-zinc-300/50'
+    }`}>
       
-      {/* Header Area */}
-      <div className="flex items-center justify-between mb-6 border-b border-zinc-200 pb-4">
+      <div className="flex items-center justify-between mb-6 border-b border-zinc-200/60 pb-4">
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-blue-100 rounded-lg">
+          <div className="p-2 bg-blue-50 rounded-lg">
             <FileText className="text-blue-600" size={20} />
           </div>
-          <h2 className="text-zinc-900 font-bold tracking-tight text-lg">Extracted Text</h2>
+          <h2 className="text-zinc-900 font-bold tracking-tight text-lg">{labels.resultHeader}</h2>
         </div>
         
         <button
@@ -29,19 +47,14 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result, copySuccess, cop
           }`}
         >
           {copySuccess ? <Check size={14} /> : <Copy size={14} />}
-          {copySuccess ? 'COPIED' : 'COPY TEXT'}
+          {copySuccess ? labels.copied : labels.copy}
         </button>
       </div>
 
-      {/* Text Output Area */}
-      <div className="relative">
-        <p className="text-zinc-800 text-base leading-relaxed whitespace-pre-line font-medium selection:bg-blue-100 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
-          {result}
-        </p>
-        
-        {/* Subtle Gradient Fade at bottom for long text */}
-        <div className="absolute bottom-0 left-0 w-full h-8 bg-linear-to-t from-white/50 to-transparent pointer-events-none" />
-      </div>
+      {/* Text Area */}
+      <p className="text-zinc-800 text-base leading-relaxed whitespace-pre-line font-medium max-h-64 overflow-y-auto custom-scrollbar">
+        {result ? result : labels.noText}
+      </p>
     </div>
   );
 };
