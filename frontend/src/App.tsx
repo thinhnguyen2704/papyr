@@ -29,7 +29,7 @@ export default function App() {
 		setIsScanning(true);
 		try {
 			const blob = await fetch(imageSrc).then((r) => r.blob());
-			const data = await scanImage(blob);
+			const data = await scanImage(blob, language);
 			console.log('Data:', data.data);
 			setResult(data.data.join('\n'));
 		} catch (error) {
@@ -38,7 +38,7 @@ export default function App() {
 		} finally {
 			setIsScanning(false);
 		}
-	}, [webcamRef]);
+	}, [webcamRef, language]);
 
 	const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (!e.target.files || e.target.files.length === 0) return;
@@ -47,7 +47,7 @@ export default function App() {
 
 		setIsScanning(true);
 		try {
-			const data = await scanImage(file);
+			const data = await scanImage(file, language);
 			console.log('Data:', data);
 			setResult(data.text.join('\n'));
 		} catch (error) {
@@ -78,18 +78,19 @@ export default function App() {
 
 				<LanguageToggle language={language} setLanguage={setLanguage} />
 
-				<div className='relative w-full aspect-video rounded-[2.5rem] overflow-hidden border border-white/10 bg-black shadow-2xl'>
+				<div className='relative w-full m-0 mx-auto overflow-hidden text-center flex justify-center'>
 					<Webcam
 						ref={webcamRef}
 						audio={false}
 						screenshotFormat='image/jpeg'
 						videoConstraints={videoConstraints}
-						className='absolute inset-0 w-full h-full object-cover'
+						onUserMediaError={(err) => console.error("Camera error:", err)}
+						className='absolute w-full h-auto object-cover group-hover:opacity-100 transition-opacity duration-500'
 					/>
 
 					{isScanning && <div className='animate-scan z-10' />}
-					<div className='absolute top-6 left-6 w-10 h-10 border-t-2 border-l-2 border-white/20 rounded-tl-xl pointer-events-none' />
-					<div className='absolute bottom-6 right-6 w-10 h-10 border-b-2 border-r-2 border-white/20 rounded-br-xl pointer-events-none' />
+					{/* <div className='absolute top-6 left-6 w-10 h-10 border-t-2 border-l-2 border-white/20 rounded-tl-xl pointer-events-none' />
+					<div className='absolute bottom-6 right-6 w-10 h-10 border-b-2 border-r-2 border-white/20 rounded-br-xl pointer-events-none' /> */}
 				</div>
 
 				<div className='w-full flex items-center justify-center gap-4 bg-zinc-900/80 backdrop-blur-xl p-3 rounded-[2rem] border border-white/10 shadow-xl'>
@@ -102,9 +103,6 @@ export default function App() {
 						<Upload size={24} />
 					</button>
 
-					{/* THE TRIPLE-LOCK HIDDEN INPUT 
-              This prevents "Choose File" from appearing in any browser 
-          */}
 					<input
 						ref={fileInputRef}
 						title='Upload'

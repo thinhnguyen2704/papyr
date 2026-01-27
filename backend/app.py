@@ -14,52 +14,44 @@ app.add_middleware(
 )
 # Initialize PaddleOCR (This can be swapped with your fine-tuned model path)
 # Use 'use_gpu=False' if you don't have an NVIDIA GPU
-ocr = PaddleOCR(use_angle_cls=True, lang="latin")
+ocr_engines = {
+    "en": PaddleOCR(
+        use_angle_cls=True,
+        lang="en",
+    ),
+    "vi": PaddleOCR(
+        use_angle_cls=True,
+        lang="vi",
+        det_db_unclip_ratio=2.5,  # Helps capture full Vietnamese diacritics
+        det_db_box_thresh=0.6,  # Filters out smaller noise dots
+        rec_image_shape="3, 48, 320",  # Standard for high-res recognition
+    ),
+}
 
 
 def preprocess_image(img):
-    # Convert to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # Increase contrast and sharpen
     # Adaptive Thresholding helps handle uneven lighting/shadows
     processed = cv2.adaptiveThreshold(
         gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
     )
+    # Just a slight blur to remove digital noise
+    processed = cv2.GaussianBlur(gray, (3, 3), 0)
     return processed
 
 
-engines = {}
-
-
-def get_ocr_engine(lang: str):
-    if lang not in engines:
-        print(f"--- Loading {lang} model for the first time ---")
-        engines[lang] = PaddleOCR(
-            use_angle_cls=True,
-            lang=lang,
-            det_db_unclip_ratio=2.5,  # Helps capture full Vietnamese diacritics
-            det_db_box_thresh=0.5,  # Filters out smaller noise dots
-            rec_image_shape="3, 48, 320",  # Standard for high-res recognition
-        )
-    return engines[lang]
-
-
 @app.post("/scan")
-async def scan_image(file: UploadFile = File(...), lang: str = "en"):
+async def scan_image(lang: str, file: UploadFile = File(...)):
+    print(f"Received scan request for language: {lang}")
     # Read image from upload
-    contents = await file.read()
-    nparr = np.frombuffer(contents, np.uint8)
+    data = await file.read()
+    nparr = np.frombuffer(data, np.uint8)
     image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-    # Clean the image before OCR
+    # Clean the image before OC
     cleaned_img = preprocess_image(image)
-    ocr = get_ocr_engine(lang)
-    # Pre-processing for Book Curves
-    # Convert to grayscale and apply adaptive thresholding
-    gray = cv2.cvtColor(cleaned_img, cv2.COLOR_BGR2GRAY)
-    cleaned_img = cv2.adaptiveThreshold(
-        gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
-    )
+    ocr = ocr_engines.get(lang, ocr_engines["vi"])
 
     # Perform OCR
     result = ocr.ocr(cleaned_img, cls=True)

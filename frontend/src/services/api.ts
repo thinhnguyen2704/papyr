@@ -1,8 +1,8 @@
-import axios from 'axios';
+import axios from "axios";
 
 const API_BASE_URL = "http://127.0.0.1:8000";
 
-export const scanImage = async (fileBlob: Blob, lang = "en") => {
+export const scanImage = async (fileBlob: Blob, lang: string) => {
   const formData = new FormData();
   formData.append("file", fileBlob, "scan.jpg");
   

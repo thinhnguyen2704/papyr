@@ -6,12 +6,12 @@ export default function LanguageToggle({
 	setLanguage: (language: string) => void;
 }) {
 	return (
-		<div className='flex items-center gap-2'>
+		<div className='flex items-center gap-4 bottom-2'>
 			<button
 				onClick={() => setLanguage('en')}
 				className={`px-4 py-2 rounded-lg transition-colors ${
 					language === 'en'
-						? 'bg-blue-600 text-white'
+						? 'bg-blue-600 text-blue-100'
 						: 'bg-zinc-800 text-zinc-400'
 				}`}
 			>
@@ -21,7 +21,7 @@ export default function LanguageToggle({
 				onClick={() => setLanguage('vi')}
 				className={`px-4 py-2 rounded-lg transition-colors ${
 					language === 'vi'
-						? 'bg-blue-600 text-white'
+						? 'bg-blue-600 text-blue-100'
 						: 'bg-zinc-800 text-zinc-400'
 				}`}
 			>
