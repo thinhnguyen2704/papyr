@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from paddleocr import PaddleOCR
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import HTTPException
 
 app = FastAPI()
 app.add_middleware(
@@ -49,20 +50,34 @@ async def scan_image(lang: str, file: UploadFile = File(...)):
     nparr = np.frombuffer(data, np.uint8)
     image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-    # Clean the image before OC
+    # Clean the image before OCR
     cleaned_img = preprocess_image(image)
     ocr = ocr_engines.get(lang, ocr_engines["vi"])
 
     # Perform OCR
     result = ocr.ocr(cleaned_img, cls=True)
-
-    # Format the output for the React frontend
     extracted_text = []
-    for line in result[0]:
-        extracted_text.append(line[1][0])
+    # 1. Check if the OCR engine returned None or an empty list
+    if result is None or not result or result[0] is None:
+        raise HTTPException(
+            status_code=422,
+            detail="no_text_found",
+        )
+    
+    try:
+        extracted_text = ""
+        for line in result[0]:
+            # result[0] format is usually [[ [coords], (text, score) ], ...]
+            text = line[1][0]
+            extracted_text += text + " "
 
-    print("OCR Result:", extracted_text)
-    return {"data": extracted_text}
+        return {"text": extracted_text.strip()}
+
+    except (TypeError, IndexError):
+        raise HTTPException(status_code=422, detail="no_text_found")
+    finally:
+        print("OCR Result:", extracted_text)
+        return {"data": extracted_text}
 
 
 if __name__ == "__main__":
