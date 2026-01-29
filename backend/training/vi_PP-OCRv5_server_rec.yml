@@ -1,0 +1,94 @@
+Global:
+  debug: false
+  use_gpu: true
+  epoch_num: 100
+  log_smooth_window: 20
+  save_model_dir: ./output/rec_ppocr_v5_server_vi
+  save_epoch_step: 10
+  print_batch_step: 20
+  eval_batch_step: [0, 500]
+  # Point to the folder where you extracted the .pdparams
+  pretrained_model: ./pretrain_models/PP-OCRv5_server_rec_pretrained
+  character_dict_path: ./data/vn_dictionary.txt
+  character_type: ch
+  use_space_char: true
+  # Server models handle longer sequences better
+  max_text_length: 60 
+  save_inference_dir: ./inference/vi_server_v5
+  save_res_path: ./output/predicts_vi.txt
+
+Optimizer:
+  name: Adam
+  beta1: 0.9
+  beta2: 0.999
+  lr:
+    name: Cosine
+    learning_rate: 0.0002 # Slightly lower LR for larger server models
+    warmup_epoch: 2
+
+Architecture:
+  model_type: rec
+  algorithm: SVTR_LCNet
+  Transform:
+  Backbone:
+    name: PPLCNetV3
+    scale: 1.0
+  Head:
+    name: CTCHead
+    fc_decay: 0.00001
+
+Train:
+  dataset:
+    name: SimpleDataSet
+    data_dir: ./
+    label_file_list: ["./vi_train_list.txt"]
+    transforms:
+      - DecodeImage:
+          img_mode: BGR
+          channel_first: false
+      - RecAug:
+          use_rec_aug: true
+      - CTCLabelEncode:
+      - RecResizeImg:
+          image_shape: [3, 48, 320]
+      - KeepKeys:
+          keep_keys: ['image', 'label', 'length']
+  loader:
+    shuffle: true
+    batch_size_per_card: 16 # Server models are heavier; adjust based on your VRAM
+    drop_last: true
+    num_workers: 0
+
+Loss:
+  name: CTCLoss
+
+PostProcess:
+  name: CTCLabelDecode
+  use_space_char: true
+
+Metric:
+  name: RecMetric
+  main_indicator: acc
+  is_filter: false # Set to true if you want to filter out punctuation during evaluation
+
+Eval:
+  dataset:
+    name: SimpleDataSet
+    # Since vi_train_list uses absolute paths, keep data_dir as ./
+    data_dir: ./
+    # Replace with the path to your validation list (e.g., from the 'test' labels)
+    label_file_list: ["./vi_val_list.txt"]
+    transforms:
+      - DecodeImage:
+          img_mode: BGR
+          channel_first: false
+      - CTCLabelEncode:
+      - RecResizeImg:
+          image_shape: [3, 48, 320]
+      - KeepKeys:
+          keep_keys: ['image', 'label', 'length']
+  loader:
+    shuffle: false
+    batch_size_per_card: 16
+    drop_last: false
+    num_workers: 0
