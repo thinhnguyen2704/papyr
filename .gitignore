@@ -5,11 +5,10 @@ __pycache__/
 *$py.class
 .env
 .pytest_cache/
-backend/output/
 backend/training/data/
-backend/training/pretrain_models/
 backend/logs/
-backend/training/ppocr/
+backend/training/output/
+
 # --- PaddleOCR / ML Weights ---
 # We ignore pre-trained models and large inference binaries
 *.pdparams
