@@ -1,6 +1,5 @@
 import os
 import paddle
-import sys
 
 def run_training():
     # 1. Health check for GPU/CPU
