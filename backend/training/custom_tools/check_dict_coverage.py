@@ -71,6 +71,6 @@ def strict_check(label_file, dict_file):
 
 
 if __name__ == "__main__":
-    check_dictionary_coverage("./vi_train_list.txt", "./data/vn_dictionary.txt")
-    normalize_and_check("vi_train_list.txt", "./data/vn_dictionary.txt")
-    strict_check("vi_train_list.txt", "./data/vn_dictionary.txt")
+    check_dictionary_coverage("./vi_rec_train_list.txt", "./data/vn_dictionary.txt")
+    normalize_and_check("vi_rec_train_list.txt", "./data/vn_dictionary.txt")
+    strict_check("vi_rec_train_list.txt", "./data/vn_dictionary.txt")

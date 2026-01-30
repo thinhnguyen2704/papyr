@@ -41,5 +41,5 @@ def resize_giant_images(image_dir, max_size=2000):
 
 if __name__ == "__main__":
     # Update this path to your actual image directory
-    train_dir = r"C:\Users\thinh.nguyen\Documents\PersonalProject\papyr\backend\training\data\test_images"
+    train_dir = r"C:\Users\thinh.nguyen\Documents\PersonalProject\papyr\backend\training\data\train_images"
     resize_giant_images(train_dir)

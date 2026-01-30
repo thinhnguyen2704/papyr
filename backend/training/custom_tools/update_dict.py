@@ -33,4 +33,3 @@ def normalize_label_file(label_file):
 
 force_rebuild_dict("vi_train_list.txt", "./data/vn_dictionary.txt")
 normalize_label_file("vi_train_list.txt")
-normalize_label_file("test_list.txt")

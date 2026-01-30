@@ -5,8 +5,12 @@ __pycache__/
 *$py.class
 .env
 .pytest_cache/
-backend/training/data/
-backend/logs/
+backend/training/data/test_images/
+backend/training/data/train_images/
+backend/training/data/val_images/
+backend/training/data/rec_crops/
+backend/training/data/labels/
+backend/training/pretrained_models/
 backend/training/output/
 
 # --- PaddleOCR / ML Weights ---
@@ -16,6 +20,7 @@ backend/training/output/
 *.pdmodel
 *.json
 inference/
+
 # --- Frontend ---
 frontend/node_modules/
 frontend/dist/

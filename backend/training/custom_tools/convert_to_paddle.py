@@ -29,7 +29,8 @@ def convert_folder_to_paddle(labels_dir, images_dir, output_file):
             image_annotations = []
 
             if not os.path.exists(img_path):
-                # Optional: print(f"Warning: Image {img_path} missing")
+                # Optional: 
+                print(f"Warning: Image {img_path} missing")
                 continue
 
             with open(label_path, 'r', encoding='utf-8-sig') as f_in:
