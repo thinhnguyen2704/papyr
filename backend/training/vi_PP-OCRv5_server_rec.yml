@@ -92,7 +92,7 @@ Eval:
   dataset:
     name: SimpleDataSet
     data_dir: ./
-    label_file_list: ["./vi_rec_train_list.txt"]
+    label_file_list: ["./vi_rec_val_list.txt"]
     transforms:
       - DecodeImage:
           img_mode: BGR

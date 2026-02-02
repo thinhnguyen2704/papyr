@@ -5,8 +5,8 @@ import numpy as np
 from tqdm import tqdm
 
 def crop_for_recognition(label_file, output_dir, new_label_file):
-    # if not os.path.exists(output_dir):
-    #     os.makedirs(output_dir)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
         
     new_lines = []
     
@@ -55,7 +55,7 @@ def crop_for_recognition(label_file, output_dir, new_label_file):
 
 if __name__ == "__main__":
     crop_for_recognition(
-        label_file="vi_train_list.txt", 
-        output_dir="./data/rec_crops", 
-        new_label_file="vi_rec_train_list.txt"
+        label_file="vi_val_list.txt", 
+        output_dir="./data/rec_val_crops", 
+        new_label_file="vi_rec_val_list.txt"
     )

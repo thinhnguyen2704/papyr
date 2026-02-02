@@ -9,6 +9,8 @@ backend/training/data/test_images/
 backend/training/data/train_images/
 backend/training/data/val_images/
 backend/training/data/rec_crops/
+backend/training/data/rec_val_crops/
+backend/training/data/rec_test_crops/
 backend/training/data/labels/
 backend/training/pretrained_models/
 backend/training/output/

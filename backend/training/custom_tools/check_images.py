@@ -2,7 +2,7 @@ import os
 
 # Define your paths - Use absolute paths for reliability
 dict_path = r"C:\Users\T01\Documents\Project\papyr\backend\training\data\vn_dictionary.txt"
-label_path = r"C:\Users\T01\Documents\Project\papyr\backend\training\vi_rec_train_list.txt"
+label_path = r"C:\Users\T01\Documents\Project\papyr\backend\training\vi_rec_test_list.txt"
 
 # 1. Check Dictionary
 if not os.path.exists(dict_path):

@@ -9,8 +9,9 @@ original_ocr = PaddleOCR(use_angle_cls=True, lang="vi")
 # Ensure the paths point to your exported inference model
 custom_ocr = PaddleOCR(
     use_angle_cls=True,
-    rec_model_dir="./output/rec_ppocr_v5_server_vi",
+    rec_model_dir="./output/rec_ppv5_vi_server/best_model/best_model",
     rec_char_dict_path="./data/vn_dictionary.txt",
+    use_gpu=True,
     lang="vi",
 )
 
@@ -43,7 +44,7 @@ def calculate_improvement(ground_truth, original_text, custom_text):
 
 
 # Run on a folder of test images
-test_folder = "./test_samples"
+test_folder = "./data/test_images/"
 for img in os.listdir(test_folder):
     if img.endswith((".jpg", ".png", ".jpeg")):
         test_comparison(os.path.join(test_folder, img))
