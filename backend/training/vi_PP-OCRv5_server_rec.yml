@@ -4,8 +4,8 @@ Global:
   epoch_num: 100
   log_smooth_window: 20
   print_batch_step: 10
-  save_model_dir: ./output/rec_ppv5_vi_server
-  save_epoch_step: 3
+  save_model_dir: ./output/papyr_rec
+  save_epoch_step: 5
   eval_batch_step: [0, 500]
   cal_metric_during_train: true
   pretrained_model: ./pretrained_models/PP-OCRv5_server_rec_pretrained
@@ -18,8 +18,7 @@ Global:
   use_space_char: true
   distributed: false
   max_text_length: 40
-  save_res_path: ./output/rec/predicts_ppv5_vi_server.txt
-  filter_weight: ["head"] # Crucial: forces the model to ignore the old 40-char head
+  save_res_path: ./output/rec/predicts_rec.txt
 
 Optimizer:
   name: Adam
@@ -27,8 +26,8 @@ Optimizer:
   beta2: 0.999
   lr:
     name: Cosine
-    learning_rate: 0.001
-    warmup_epoch: 5
+    learning_rate: 0.0005
+    warmup_epoch: 0
   regularizer:
     name: L2
     factor: 3.0e-05
@@ -60,7 +59,7 @@ PostProcess:
 Metric:
   name: RecMetric
   main_indicator: acc
-  ignore_space: false
+  ignore_space: true
 
 Train:
   dataset:
@@ -84,9 +83,9 @@ Train:
           keep_keys: ['image', 'label', 'length']
   loader:
     shuffle: true
-    batch_size_per_card: 96 # Adjusted for 4090 stability, increase to 128 if VRAM allows
+    batch_size_per_card: 96
     drop_last: true
-    num_workers: 8 # RTX 4090 can handle high worker counts
+    num_workers: 12 # Kept at 4 for better IPS on Windows
 
 Eval:
   dataset:
