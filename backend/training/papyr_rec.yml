@@ -1,15 +1,15 @@
 Global:
   debug: false
   use_gpu: true
-  epoch_num: 500
+  epoch_num: 200
   log_smooth_window: 20
   print_batch_step: 10
   save_model_dir: ./output/papyr_rec
-  learning_rate: 0.0005
-  save_epoch_step: 10
-  eval_batch_step: [0, 200]
+  learning_rate: 0.0002
+  save_epoch_step: 1
+  eval_batch_step: [0, 1000]
   cal_metric_during_train: true
-  pretrained_model: ./output/papyr_rec/iter_epoch_100 # Default model: ./pretrained_models/PP-OCRv5_server_rec_pretrained 
+  pretrained_model: ./output/papyr_rec/iter_epoch_500 # Default: ./pretrained_models/PP-OCRv5_server_rec_pretrained 
   checkpoints: 
   save_inference_dir:
   use_visualdl: false
@@ -20,6 +20,7 @@ Global:
   distributed: false
   max_text_length: 64
   save_res_path: ./output/rec/predicts_rec.txt
+  image_shape: [3, 48, 640]
 
 Optimizer:
   name: Adam
@@ -27,8 +28,8 @@ Optimizer:
   beta2: 0.999
   lr:
     name: Cosine
-    learning_rate: 0.0005
-    warmup_epoch: 5
+    learning_rate: 0.0002
+    warmup_epoch: 2
   regularizer:
     name: L2
     factor: 3.0e-05
@@ -67,7 +68,10 @@ Train:
     name: SimpleDataSet
     data_dir: ./
     ext_op_transform_idx: 1
-    label_file_list: ["./vi_rec_train_list.txt"]
+    label_file_list: 
+      - ./vi_rec_train_list.txt
+      - ./data/train_labels_huge.txt    
+    ratio_list: [1.0, 1.0]
     transforms:
       - DecodeImage:
           img_mode: BGR
@@ -84,9 +88,9 @@ Train:
           keep_keys: ['image', 'label', 'length']
   loader:
     shuffle: true
-    batch_size_per_card: 64
+    batch_size_per_card: 48
     drop_last: true
-    num_workers: 4 # Kept at 4 for better IPS on Windows
+    num_workers: 2 # Kept at 4 for better IPS on Windows
 
 Eval:
   dataset:
@@ -105,5 +109,5 @@ Eval:
   loader:
     shuffle: false
     drop_last: false
-    batch_size_per_card: 64
-    num_workers: 1
+    batch_size_per_card: 48
+    num_workers: 2

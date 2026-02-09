@@ -7,15 +7,13 @@ def run_training():
     paddle.utils.run_check()
     
     # 2. Verify Config exists
-    config_path = "vi_PP-OCRv5_server_rec.yml"
+    config_path = "papyr_rec.yml"
     if not os.path.exists(config_path):
         print(f"Error: Config file {config_path} not found!")
         return
 
     print(f"--- Starting Fine-tuning with {config_path} ---")
     
-    # Senior Tip: Point to the actual PaddleOCR tool. 
-    # If your script is in the 'training' root, the command is:
     command = f"python tools/train.py -c {config_path}"
     
     exit_code = os.system(command)
