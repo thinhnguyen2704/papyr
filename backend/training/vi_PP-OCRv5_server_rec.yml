@@ -1,15 +1,16 @@
 Global:
   debug: false
   use_gpu: true
-  epoch_num: 100
+  epoch_num: 500
   log_smooth_window: 20
   print_batch_step: 10
   save_model_dir: ./output/papyr_rec
-  save_epoch_step: 5
-  eval_batch_step: [0, 500]
+  learning_rate: 0.0005
+  save_epoch_step: 10
+  eval_batch_step: [0, 200]
   cal_metric_during_train: true
-  pretrained_model: ./pretrained_models/PP-OCRv5_server_rec_pretrained
-  checkpoints:
+  pretrained_model: ./output/papyr_rec/iter_epoch_100 # Default model: ./pretrained_models/PP-OCRv5_server_rec_pretrained 
+  checkpoints: 
   save_inference_dir:
   use_visualdl: false
   infer_img:
@@ -17,7 +18,7 @@ Global:
   character_type: ch
   use_space_char: true
   distributed: false
-  max_text_length: 40
+  max_text_length: 64
   save_res_path: ./output/rec/predicts_rec.txt
 
 Optimizer:
@@ -27,7 +28,7 @@ Optimizer:
   lr:
     name: Cosine
     learning_rate: 0.0005
-    warmup_epoch: 0
+    warmup_epoch: 5
   regularizer:
     name: L2
     factor: 3.0e-05
@@ -74,18 +75,18 @@ Train:
       - RecConAug:
           prob: 0.5
           ext_data_num: 2
-          image_shape: [48, 320, 3]
-          max_text_length: 40
+          image_shape: [48, 640, 3]
+          max_text_length: 64
       - CTCLabelEncode:
       - RecResizeImg:
-          image_shape: [3, 48, 320]
+          image_shape: [3, 48, 640]
       - KeepKeys:
           keep_keys: ['image', 'label', 'length']
   loader:
     shuffle: true
-    batch_size_per_card: 96
+    batch_size_per_card: 64
     drop_last: true
-    num_workers: 12 # Kept at 4 for better IPS on Windows
+    num_workers: 4 # Kept at 4 for better IPS on Windows
 
 Eval:
   dataset:
@@ -98,11 +99,11 @@ Eval:
           channel_first: false
       - CTCLabelEncode:
       - RecResizeImg:
-          image_shape: [3, 48, 320]
+          image_shape: [3, 48, 640]
       - KeepKeys:
           keep_keys: ['image', 'label', 'length']
   loader:
     shuffle: false
     drop_last: false
     batch_size_per_card: 64
-    num_workers: 4
+    num_workers: 1

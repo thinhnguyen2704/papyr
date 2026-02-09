@@ -5,19 +5,16 @@ __pycache__/
 *$py.class
 .env
 .pytest_cache/
-backend/training/data/test_images/
-backend/training/data/train_images/
-backend/training/data/val_images/
-backend/training/data/train_crops/
-backend/training/data/val_crops/
-backend/training/data/test_crops/
-backend/training/data/labels/
+backend/training/data/VinAI
+backend/training/data/IMG_OCR_VIE_CN/
 backend/training/pretrained_models/
 backend/training/output/
 backend/training/vi_rec_train_list.txt
 backend/training/vi_rec_val_list.txt
 backend/training/vi_rec_test_list.txt
-
+train_crops
+train_crops_huge
+fonts/
 # --- PaddleOCR / ML Weights ---
 # We ignore pre-trained models and large inference binaries
 *.pdparams

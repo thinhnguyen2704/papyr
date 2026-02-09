@@ -1,76 +1,47 @@
+import json
 import cv2
+import numpy as np
 import os
 
-# --- Configuration ---
-IMAGE_FOLDER = './data/test_images'  # Path where im0001.jpg etc. are stored
-LABEL_FOLDER = './data/labels'  # Path where gt_1.txt etc. are stored
-OUTPUT_FOLDER = './data/test_crops'  # Where the cropped images will go
-OUTPUT_LABEL = './vi_rec_test_list.txt' # The final list for PaddleOCR
+root_dir = './data/IMG_OCR_VIE_CN'
+output_dir = 'train_crops'
 
-# Create output folder
-if not os.path.exists(OUTPUT_FOLDER):
-    os.makedirs(OUTPUT_FOLDER)
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
 
-crop_count = 0
-train_list = []
-
-# Loop through your images
-for i in range(1801, 2000):
-    img_name = f"im{i:04d}.jpg"
-    label_name = f"gt_{i}.txt"
-    
-    img_path = os.path.join(IMAGE_FOLDER, img_name)
-    label_path = os.path.join(LABEL_FOLDER, label_name)
-    
-    if not os.path.exists(img_path) or not os.path.exists(label_path):
-        continue
-
-    # Load image
-    image = cv2.imread(img_path)
-    if image is None:
-        continue
-
-    # Read label file
-    with open(label_path, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-
-    for line_idx, line in enumerate(lines):
-        # Expected format: x1,y1,x2,y2,x3,y3,x4,y4,text
-        parts = line.strip().split(',')
-        if len(parts) < 9 or parts[8] == "###": # Skip "don't care" labels
-            continue
+def crop_images():
+    for category in os.listdir(root_dir):
+        category_path = os.path.join(root_dir, category)
         
-        try:
-            # Extract coordinates
-            coords = [int(p) for p in parts[:8]]
-            text = ",".join(parts[8:]) # Handle text that might contain commas
-            
-            # Get bounding box for cropping
-            x_coords = coords[0::2]
-            y_coords = coords[1::2]
-            xmin, xmax = min(x_coords), max(x_coords)
-            ymin, ymax = min(y_coords), max(y_coords)
-            
-            # Crop the image
-            crop = image[ymin:ymax, xmin:xmax]
-            
-            if crop.size == 0:
-                continue
+        if os.path.isdir(category_path):
+            for file_name in os.listdir(category_path):
+                if file_name.endswith('.json'):
+                    json_path = os.path.join(category_path, file_name)
+                    
+                    with open(json_path, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    
+                    # Assume .jpg is in the same folder as the .json
+                    image_filename = data.get("imagePath", "")
+                    image_path = os.path.join(category_path, image_filename)
+                    
+                    img = cv2.imread(image_path)
+                    if img is None:
+                        continue
 
-            # Save the crop
-            crop_filename = f"crop_{i:04d}_{line_idx}.jpg"
-            crop_save_path = os.path.join(OUTPUT_FOLDER, crop_filename)
-            cv2.imwrite(crop_save_path, crop)
-            
-            # Add to the PaddleOCR training list format: path\tlabel
-            train_list.append(f"{OUTPUT_FOLDER}/{crop_filename}\t{text}")
-            crop_count += 1
-            
-        except Exception as e:
-            print(f"Error processing {img_name} at line {line_idx}: {e}")
+                    for i, shape in enumerate(data.get("shapes", [])):
+                        label = shape.get("label", "")
+                        if label == "###" or not label.strip():
+                            continue
+                            
+                        # Handle polygon points
+                        points = np.array(shape.get("points", []), dtype=np.int32)
+                        x, y, w, h = cv2.boundingRect(points)
+                        
+                        # Add a small 2-pixel padding to avoid cutting off diacritics
+                        crop = img[max(0, y-2):y+h+2, max(0, x-2):x+w+2]
+                        
+                        crop_filename = f"{category}_crop_{i}_{image_filename}"
+                        cv2.imwrite(os.path.join(output_dir, crop_filename), crop)
 
-# Save the final training list
-with open(OUTPUT_LABEL, 'w', encoding='utf-8') as f:
-    f.write("\n".join(train_list))
-
-print(f"✅ Successfully created {crop_count} crops and updated {OUTPUT_LABEL}")
+crop_images()
