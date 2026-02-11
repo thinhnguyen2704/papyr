@@ -1,0 +1,23 @@
+📑 Journal Entry: R3 Day 1 Status
+Checkpoint Verification
+Folder Audit: Confirmed ./output/papyr_rec/ is receiving updates. Model Health: latest.pdparams is updating every 1000 steps. Validation: Even if accuracy is currently lower than the "best" checkpoint, the training is mathematically progressing as evidenced by the stable Loss.
+
+R3_HUGE Phase 2
+Resume Status: Successfully hot-swapped YAML config. New Baseline: Training speed increased by ~15% (20.7 IPS). ETA reduced to 11 days. Validation Config: Evaluation now scheduled every 1000 steps (~45-50 mins). Current Goal: Maintain stability and monitor for the first "Best Model" overwrite after the warmup period.
+
+Reliability Check
+Power Configuration: Verified "Plugged in" sleep mode is disabled. Storage Verification: Monitored ./output/papyr_rec/ for file integrity. Checkpoint Strategy: Confirmed that latest.pdparams is the primary recovery point, while best_accuracy.pdparams serves as the final production candidate.
+
+R3 Breakthrough
+Milestone: Step 4000 reached; first best_accuracy save for the R3 run. Performance: Accuracy climbed from 0% to 2.6%. Peak LR of 0.0002 achieved. Observation: The "Warmup" phase is complete. The model is now in the "Deep Learning" phase where accuracy usually follows an exponential growth curve for the next few epochs.
+
+###############
+📑 Journal Entry: R3 Day 2 Status
+Checkpoint: Step 25,000 reached at 9:25 AM. Accuracy: Improved from 2.6% to 3.6% exact match. Edit Distance: Best recorded at 0.122. Observation: The model is successfully processing the "Huge" dataset without crashing. Bottleneck remains CPU/Augmentation based on avg_batch_cost vs avg_reader_cost.
+
+
+📑 Journal Entry: R3 Day 3 Status
+Checkpoint: Step 55,000 reached at 9:21 AM. Performance: Best Edit Distance improved from 0.122 to 0.146 (a 20% improvement in character-level recognition). Hardware Status: Memory remains locked at 18,229 MB. Temperature is stable. Training speed is a consistent 16.6 IPS. Strategic Note: We are now entering Epoch 27. Historically, Vietnamese OCR models on synthetic data start to see "visual clarity" between Epoch 30 and 50.
+
+R3 Validation Crash
+Issue: UnicodeEncodeError ('gbk' codec) during batch inference. Cause: Windows terminal attempting to render Vietnamese extended characters (specifically \u1edc / Ờ) using non-UTF-8 encoding. Observation: Model is correctly outputting Vietnamese characters, but word-level coherence is still low (Confidence ~23%). Action: Set PYTHONIOENCODING to utf-8 to bypass Windows encoding limitations.

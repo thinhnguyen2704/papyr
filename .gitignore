@@ -5,6 +5,8 @@ __pycache__/
 *$py.class
 .env
 .pytest_cache/
+
+# --- Data / Outputs ---
 backend/training/data/VinAI
 backend/training/data/IMG_OCR_VIE_CN/
 backend/training/pretrained_models/
@@ -14,9 +16,11 @@ backend/training/vi_rec_val_list.txt
 backend/training/vi_rec_test_list.txt
 train_crops
 train_crops_huge
+test_crops
 fonts/
+
 # --- PaddleOCR / ML Weights ---
-# We ignore pre-trained models and large inference binaries
+# Ignore pre-trained models and large inference binaries
 *.pdparams
 *.pdopt
 *.pdmodel

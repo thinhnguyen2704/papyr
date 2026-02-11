@@ -62,12 +62,3 @@ Goal: Teach the model the "logic" of Vietnamese syllables (e.g., that Qu is ofte
 Success Metric: Target an Edit Distance > 0.75 and Accuracy > 30% for the next run.
 
 
-### 📑 Journal Entry: 
-Checkpoint Verification
-Folder Audit: Confirmed ./output/papyr_rec/ is receiving updates. Model Health: latest.pdparams is updating every 1000 steps. Validation: Even if accuracy is currently lower than the "best" checkpoint, the training is mathematically progressing as evidenced by the stable Loss.
-
-R3_HUGE Phase 2
-Resume Status: Successfully hot-swapped YAML config. New Baseline: Training speed increased by ~15% (20.7 IPS). ETA reduced to 11 days. Validation Config: Evaluation now scheduled every 1000 steps (~45-50 mins). Current Goal: Maintain stability and monitor for the first "Best Model" overwrite after the warmup period.
-
-Reliability Check
-Power Configuration: Verified "Plugged in" sleep mode is disabled. Storage Verification: Monitored ./output/papyr_rec/ for file integrity. Checkpoint Strategy: Confirmed that latest.pdparams is the primary recovery point, while best_accuracy.pdparams serves as the final production candidate.
