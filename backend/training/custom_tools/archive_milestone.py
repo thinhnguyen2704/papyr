@@ -29,4 +29,4 @@ def archive(step_name):
 
 if __name__ == "__main__":
     # You can change this string whenever you hit a new big step
-    archive("step_116k")
+    archive("step_366k")

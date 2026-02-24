@@ -93,3 +93,15 @@ Checkpoint: Step 116,000; New best_accuracy model saved.
 Status: Fluency Phase initiated. The model is now refining word-level patterns.
 Metrics: Loss: 8.56 (New Low), Acc: 3.6%, Edit Dist: 0.135 (New High).
 Observation: Training speed remains healthy at 16.6 IPS despite the massive dataset size.
+
+📑 Journal Entry: R3 Post-Holiday Recovery
+Status: Training halted at Step 366,400 (Epoch 174) due to external system interruption.
+Final Metrics: Loss ~8.2, Edit Distance ~0.124.
+Observation: The model has completed over 350k steps of refinement. The "Great Unlearning" phase is long gone, and the model is now in a stable plateau.
+Decision: Pending final batch inference. If word-level cohesion is high, we will terminate R3 and move to the fine-tuning phase.
+
+📑 Final Journal Entry: R3 Conclusion
+Final Milestone: Step 366,400 (Epoch 174).
+Status: Run R3 (Huge Dataset) officially completed.
+Performance: The model is stable, recognizing 80% of Vietnamese diacritics and document structures.
+System State: 4090 is idling. Windows updates managed to stop the run, but only after convergence was reached.

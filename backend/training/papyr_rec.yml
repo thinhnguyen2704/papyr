@@ -84,6 +84,7 @@ Train:
       - CTCLabelEncode:
       - RecResizeImg:
           image_shape: [3, 48, 640]
+          padding: true
       - KeepKeys:
           keep_keys: ['image', 'label', 'length']
   loader:
